@@ -14,8 +14,8 @@ class Digital{
   public:
     /**
      * Defines the pin as GPIO
-     * @param pin The pin number
-     * @param mode INPUT or OUTPUT mode
+     * @param pin The pin number to connect port
+     * @param mode The mode of the port (INPUT or OUTPUT)
      */
     void pinMode(uint8_t pin, uint8_t mode);
 
@@ -82,7 +82,7 @@ class Digital{
      */
     void delay();
   private:
-    /** Pin of the board*/
+    /** Physical pin of the board (identical to Arduino)*/
     uint8_t _pin;
 };
 

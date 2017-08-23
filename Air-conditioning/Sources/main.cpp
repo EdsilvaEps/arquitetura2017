@@ -1,39 +1,24 @@
 #include <MKL25Z4.h>
-#include <Lib/Digital/Digital.h>
+
+#include <Lib/Display/Display.h>
 
 
-int input_Pin = 0;
-int output_Pin = 1;
+int SCLK_PIN = 0;
+int RCLK_PIN = 1;
+int DIO_PIN = 2;
 
-
-Digital inputPin;
-Digital outPutPin;
-
-Digital led1;
-Digital led2;
-Digital led3;
+Display disp(SCLK_PIN, RCLK_PIN, DIO_PIN);
 
 
 int main(){
 
-  inputPin.pinMode(input_Pin, INPUT);
-  outPutPin.pinMode(output_Pin, OUTPUT);
-
-  led1.redLed();
-  led2.greenLed();
-  led3.blueLed();
-
 
   while(true){
 
-    if(inputPin.read()){
-      led1.onRedLed();
-      led2.offBlueLed();
-    }
+    disp.showNumber(15,1);
+    disp.showNumber(30,2);
+  }
 
-    led2.onBlueLed();
-    led1.offRedLed();
-	}
 
     return 0;
 }
