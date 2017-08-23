@@ -15,7 +15,7 @@ int main(){
     if(fd.getFlag()){
       fd.setFlag();
       //
-      //Frequencia dividida
+      //Frequencia da placa dividida por 2
       //
     }
   }
