@@ -1,22 +1,19 @@
 #include <MKL25Z4.h>
 
-#include <Lib/Display/Display.h>
+#include <Lib/Multiplexer/Multiplexer.h>
 
-
-int SCLK_PIN = 0;
-int RCLK_PIN = 1;
-int DIO_PIN = 2;
-
-Display disp(SCLK_PIN, RCLK_PIN, DIO_PIN);
-
+Multiplexer mult;
 
 int main(){
 
+  uint8_t SEL = 0;
+  uint8_t A = 2;
+  uint8_t B = 3;
+  uint8_t result;
 
   while(true){
 
-    disp.showNumber(15,1);
-    disp.showNumber(30,2);
+    result = mult.select(SEL, A, B);
   }
 
 

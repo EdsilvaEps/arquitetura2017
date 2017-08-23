@@ -42,7 +42,6 @@ class Display{
     void showNumber(uint8_t number, uint8_t port);
 
 
-
   private:
 
     /**
