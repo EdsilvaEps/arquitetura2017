@@ -1,25 +1,29 @@
 #include <MKL25Z4.h>
 
-#include <Lib/FrequencyDivider/FrequencyDivider.h>
+#include <Lib/MinuteTimer/MinuteTimer.h>
 
-FrequencyDivider fd(2);
+int increment_pin = 0;
+int decrement_pin = 1;
+int reset_pin = 2;
+
+MinuteTimer mt(increment_pin, decrement_pin, reset_pin);
 
 int main(){
 
-
-
   while(true){
 
-    fd.clockDiv();
+    if(!mt.readIncrementButton()){
+      mt.increment();
+    }
 
-    if(fd.getFlag()){
-      fd.setFlag();
-      //
-      //Frequencia da placa dividida por 2
-      //
+    if(!mt.readDecrementButton()){
+      mt.decrement();
+    }
+
+    if(!mt.readResetButton()){
+      mt.reset();
     }
   }
 
-
-    return 0;
+  return 0;
 }

@@ -13,7 +13,7 @@ class Digital{
 
   public:
     /**
-     * Defines the pin as GPIO
+     * Defines the pin as GPIO. If mode=INPUT, pull-up resistor is SET
      * @param pin The pin number to connect port
      * @param mode The mode of the port (INPUT or OUTPUT)
      */
