@@ -8,9 +8,9 @@
  * @author Salmiakki Team
  * @version 1.0, 2017-08-23
  */
-class Multiplexer {
+class Multiplexer{
 
-	public:
+  public:
 
     /**
      * Based in 'select' the OUTPUT is 'inputCounter' or 'inputTemperature'
@@ -19,7 +19,7 @@ class Multiplexer {
      * @param inputTemperature Data of DHT11
      * @return Output of multiplexer
      */
-		uint8_t select(uint8_t select, uint8_t inputCounter, uint8_t inputTemperature);
+    uint8_t select(uint8_t select, uint8_t inputCounter, uint8_t inputTemperature);
 
 };
 
