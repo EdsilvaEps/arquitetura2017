@@ -1,29 +1,32 @@
 #include <MKL25Z4.h>
 
-#include <Lib/MinuteTimer/MinuteTimer.h>
+#include <Lib/InterruptTimer/InterruptTimer.h>
 
-int increment_pin = 0;
-int decrement_pin = 1;
-int reset_pin = 2;
+InterruptTimer it(10, 0);
+InterruptTimer it2(1, 1);
 
-MinuteTimer mt(increment_pin, decrement_pin, reset_pin);
+extern "C" {
+  void PIT_IRQHandler(void){
+
+    if(it.isInterrupt()){
+      it.clearFlagInterrupt();
+      //do something
+    }
+
+    if(it2.isInterrupt()){
+      it2.clearFlagInterrupt();
+      //do something
+    }
+
+  }
+}
 
 int main(){
 
-  while(true){
+  it.start();
+  it2.start();
 
-    if(!mt.readIncrementButton()){
-      mt.increment();
-    }
-
-    if(!mt.readDecrementButton()){
-      mt.decrement();
-    }
-
-    if(!mt.readResetButton()){
-      mt.reset();
-    }
-  }
+  while(true){}
 
   return 0;
 }
