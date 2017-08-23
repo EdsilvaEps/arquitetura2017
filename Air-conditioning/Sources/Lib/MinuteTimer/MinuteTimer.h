@@ -62,8 +62,15 @@ class MinuteTimer{
     /**
      * Check input clock
      * @param pulse Output of frequency divider
+     * @return True if pulse is true and FALSE other case
      */
-    void receiveClock(bool pulse);
+    uint8_t receiveClock(bool pulse);
+
+    /**
+     * Check if decrement is ON
+     * @return TRUE if decrement in progress and FALSE other case
+     */
+    uint8_t isDecrement();
 
   private:
 
@@ -77,7 +84,10 @@ class MinuteTimer{
     Digital _resetButton;
 
     /** Current time of controller */
-    int8_t _sleepTime = 0;
+    uint8_t _sleepTime = 0;
+
+    /** Current state of decrement*/
+    uint8_t _decrementFlag = false;
 };
 
 #endif

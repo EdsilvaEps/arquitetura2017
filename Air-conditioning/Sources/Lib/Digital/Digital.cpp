@@ -358,6 +358,7 @@ void Digital::blueLed(){
   SIM_BASE_PTR->SCGC5 |= SIM_SCGC5_PORTD_MASK;
   PORTD->PCR[1] = PORT_PCR_MUX(1U);
   PTD->PDDR |= (1U << 1U);
+  PTD->PDOR |= (1U << 1U);
 }
 
 void Digital::onBlueLed(){
@@ -374,6 +375,7 @@ void Digital::redLed(){
   SIM_BASE_PTR->SCGC5 |= SIM_SCGC5_PORTB_MASK;
   PORTB->PCR[18] = PORT_PCR_MUX(1U);
   PTB->PDDR |= (1U << 18U);
+  PTB->PDOR |= (1U << 18U);
 }
 
 void Digital::onRedLed(){
@@ -388,6 +390,7 @@ void Digital::greenLed(){
   SIM_BASE_PTR->SCGC5 |= SIM_SCGC5_PORTB_MASK;
   PORTB->PCR[19] = PORT_PCR_MUX(1U);
   PTB->PDDR |= (1U << 19U);
+  PTB->PDOR |= (1U << 19U);
 }
 
 void Digital::onGreenLed(){

@@ -24,20 +24,30 @@ uint8_t MinuteTimer::getSleepTime(){
 void MinuteTimer::decrement(){
 
 	_sleepTime -= 1;
+	_decrementFlag = true;
 
-	if(_sleepTime <= 0)
-		_sleepTime = 0;
+	if(_sleepTime <= 0){
+	  _sleepTime = 0;
+	  _decrementFlag = false;
+	}
+}
+
+uint8_t MinuteTimer::isDecrement(){
+  return _decrementFlag;
 }
 
 void MinuteTimer::reset(){
+
 	_sleepTime = 0;
 }
 
-void MinuteTimer::receiveClock(bool pulse){
+uint8_t MinuteTimer::receiveClock(bool pulse){
 
 	if(pulse){
 		decrement();
+		return true;
 	}
+	return false;
 }
 
 uint8_t MinuteTimer::readIncrementButton(){
@@ -45,6 +55,7 @@ uint8_t MinuteTimer::readIncrementButton(){
 }
 
 uint8_t MinuteTimer::readDecrementButton(){
+  _decrementFlag = true;
 	return _decrementButton.read();
 }
 
