@@ -27,7 +27,7 @@ class Display{
   public:
 
     /**
-     * Constructor class - Associates the pins of the board with the pins of the module
+     * Constructor class - Associates the pins of the board with the pins of the module .
      * @param SCLK The number of the pin connected to the SCLK pin of the module
      * @param RCLK The number of the pin connected to the RCLK pin of the module
      * @param DIO  The number of the pin connected to the DIO pin of the module
