@@ -27,7 +27,7 @@ class Display{
   public:
 
     /**
-     * Constructor class -
+     * Constructor class - Associates the pins of the board with the pins of the module
      * @param SCLK The number of the pin connected to the SCLK pin of the module
      * @param RCLK The number of the pin connected to the RCLK pin of the module
      * @param DIO  The number of the pin connected to the DIO pin of the module
@@ -40,7 +40,6 @@ class Display{
      * @param port Led active
      */
     void showNumber(uint8_t number, uint8_t port);
-
 
   private:
 
