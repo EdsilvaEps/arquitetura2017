@@ -1,5 +1,4 @@
 #include <MKL25Z4.h>
-#include <Lib/PIT/PITPeriodicInterrupt/mkl_PITPeriodicInterrupt.h>
 #include <Lib/Display/dsf_SerialDisplays.h>
 #include <Lib/GPIO/mkl_GPIOPort.h>
 #include <Lib/Multiplexer/Multiplexer.h>
