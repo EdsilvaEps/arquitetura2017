@@ -54,7 +54,7 @@
  *  Seta o perif�rico, considerando os pinos de sa�da referentes ao componente
  *  DIO (dado), SCLK (desloca), RCLK (transfere de um registrador para o outro)
  */
-dsf_SerialDisplays:: dsf_SerialDisplays(gpio_Pin Pin_DIO, gpio_Pin Pin_SCLK, gpio_Pin Pin_RCLK){
+dsf_SerialDisplays::dsf_SerialDisplays(gpio_Pin Pin_DIO, gpio_Pin Pin_SCLK, gpio_Pin Pin_RCLK){
 
   DIO = mkl_GPIOPort(Pin_DIO);
   SCLK = mkl_GPIOPort(Pin_SCLK);
@@ -69,7 +69,7 @@ dsf_SerialDisplays:: dsf_SerialDisplays(gpio_Pin Pin_DIO, gpio_Pin Pin_SCLK, gpi
 /*!
  *  Atualiza o dado nos registradores internos.
  */
-void dsf_SerialDisplays::updateDisplays() {
+void dsf_SerialDisplays::updateDisplays(){
   /*!
    *  Envia o valor do vetor storeData na posi��o 0 para o primeiro
    *  display, que � referido com o bin�rio.
@@ -102,64 +102,45 @@ void dsf_SerialDisplays::updateDisplays() {
 /*!
  *  Armazena o valor do n�mero e a posi��o do display a ser mostrada.
  */
-void dsf_SerialDisplays::writeNibble(uint8_t bin, uint8_t number) {
+void dsf_SerialDisplays::writeNibble(uint8_t bin, uint8_t number){
   storeData[number] = nibble[bin];
 }
 
-void dsf_SerialDisplays::writeWord(uint16_t bcd) {
-  /*!
-   *  Vari�veis auxiliares
-   */
-  int A = 0, B = 0, C = 0, D = 0;
+void dsf_SerialDisplays::writeWord(uint8_t number, uint8_t port){
 
-  /*!
-   *  Retirar a casa dos milhares.
-   */
-  A = static_cast<int>(bcd/1000);
+  uint8_t unit = (uint8_t) (number % 10);
+  int8_t ten = (uint8_t) (number / 10);
 
-  /*!
-   *  Retirar a casa das centenas.
-   */
-  B = static_cast<int>(bcd - A*1000)/100;
+  uint8_t multiplier = 0;
 
-  /*!
-   * Retirar a casa das dezenas
-   */
-  C = static_cast<int>(bcd - A*1000 - B*100)/10;
+  if(port == 1)
+    multiplier = 1;
+  else if(port == 2)
+    multiplier = 2;
+  else
+    port = 0;
 
-  /*!
-   *  Retirar a casa das unidades.
-   */
-  D = static_cast<int>(bcd - A*1000 - B*100 - C*10);
+  if(port > 0){
+    sendNibble(nibble[unit]);
+    sendNibble(multiplier * (1 << (port - 1)));
+    RCLK.writeBit(0);
+    RCLK.writeBit(1);
+  }
 
-  /*!
-   *  Armazena na posi��o 3 o valor n�merico de A.
-   */
-  storeData[3] = nibble[A];
-
-  /*!
-   *  Armazena na posi��o 2 o valor n�merico de B.
-   */
-  storeData[2] = nibble[B];
-
-  /*!
-   *  Armazena na posi��o 1 o valor n�merico de C.
-   */
-  storeData[1] = nibble[C];
-
-  /*!
-   *  Armazena na posi��o 0 o valor n�merico de D.
-   */
-  storeData[0] = nibble[D];
+  if((number > 9) && (port > 0)){
+    sendNibble(nibble[ten]);
+    sendNibble(multiplier * (1 << port));
+    RCLK.writeBit(0);
+    RCLK.writeBit(1);
+  }
 }
 
-
-void dsf_SerialDisplays::clearDisplays() {
+void dsf_SerialDisplays::clearDisplays(){
   /*!
    *  Vari�vel auxiliar.
    */
   int i = 0;
-  for (i=0; i <= 3; i++) {
+  for(i = 0; i <= 3; i++){
     /*!
      *  Limpa o registrador de acordo com a posi��o "i".
      */
@@ -170,11 +151,11 @@ void dsf_SerialDisplays::clearDisplays() {
 /*!
  *  Mostra os Zeros a esquerda
  */
-void dsf_SerialDisplays::showZerosLeft() {
+void dsf_SerialDisplays::showZerosLeft(){
   /*!
    *  Se a posi��o 3 for zero o dado ser� mostrado.
    */
-  if (storeData[3] == 0xFF) {
+  if(storeData[3] == 0xFF){
     /*!
      *  Dado sendo mostrado
      */
@@ -182,17 +163,17 @@ void dsf_SerialDisplays::showZerosLeft() {
     /*!
      *  Se a posi��o 2 for zero o dado ser� mostrado.
      */
-    if (storeData[2] == 0xFF) {
+    if(storeData[2] == 0xFF){
       /*!
        *  Dado sendo mostrado
        */
       storeData[2] = 0xC0;
 
-	  /*!
+      /*!
        *  Se a posi��o 2 for zero o dado ser� mostrado.
        */
-      if (storeData[1] == 0xFF) {
-	    /*!
+      if(storeData[1] == 0xFF){
+        /*!
          *  Dado sendo mostrado.
          */
         storeData[1] = 0xC0;
@@ -204,30 +185,30 @@ void dsf_SerialDisplays::showZerosLeft() {
 /*!
  *  Apaga os Zeros a esquerda.
  */
-void dsf_SerialDisplays::hideZerosLeft() {
+void dsf_SerialDisplays::hideZerosLeft(){
   /*!
    *  Se o dado na posi��o 3 for 0, logo ele ser� apagado,
    *  se n�o continua normalmente.
    */
-  if (storeData[3] == 0xC0) {
+  if(storeData[3] == 0xC0){
     /*!
      *  Dado sendo apagado
      */
     storeData[3] = 0xFF;
-	/*!
+    /*!
      *  Se o dado na posi��o 2 for 0, logo ele ser� apagado,
-	 *  se n�o continua normalmente.
+     *  se n�o continua normalmente.
      */
-    if (storeData[2] == 0xC0) {
+    if(storeData[2] == 0xC0){
       /*!
        *  Dado sendo apagado.
        */
       storeData[2] = 0xFF;
-	  /*!
+      /*!
        *  Se o dado na posi��o 1 for 0, logo ele ser� apagado,
-	   *  se n�o continua normalmente.
+       *  se n�o continua normalmente.
        */
-      if (storeData[1] == 0xC0) {
+      if(storeData[1] == 0xC0){
         /*!
          *  Dado sendo apagado.
          */
@@ -237,15 +218,16 @@ void dsf_SerialDisplays::hideZerosLeft() {
   }
 }
 
-void dsf_SerialDisplays:: sendNibble(char digit) {
+void dsf_SerialDisplays::sendNibble(char digit){
   /*!
    * Valor auxiliar
    */
   int t = 0;
-  for (t = 8; t >= 1; t--) {
-    if (digit & 0x80) {
+  for(t = 8; t >= 1; t--){
+    if(digit & 0x80){
       DIO.writeBit(1);
-    } else {
+    }
+    else{
       DIO.writeBit(0);
     }
     digit <<= 1;
@@ -257,7 +239,7 @@ void dsf_SerialDisplays:: sendNibble(char digit) {
 /*!
  *  Cria��o de um vetor de constantes com seus respectivos valores decodificados
  */
-void dsf_SerialDisplays::setNibble() {
+void dsf_SerialDisplays::setNibble(){
   /*!
    *  Valores 0,1,2,3,4,5,6,7,8 e 9
    */
