@@ -6,6 +6,7 @@
 #include <Lib/Onoff/Onoff.h>
 #include <Lib/MinuteTimer/MinuteTimer.h>
 #include <Lib/PIT/PITPeriodicInterrupt/mkl_PITPeriodicInterrupt.h>
+#include <Lib/FrequencyDivider/FrequencyDivider.h>
 
 dsf_SerialDisplays display(gpio_PTA1, gpio_PTA2, gpio_PTD4);
 Onoff onoffButton(gpio_PTA5, gpio_PTB19);
@@ -14,23 +15,23 @@ Multiplexer multiplex;
 mkl_TPMDelay delay(tpm_TPM0);
 mkl_GPIOPort ledBlue(gpio_PTD1);
 mkl_PITInterruptInterrupt pit(PIT_Ch0);
+FrequencyDivider fd(100);
 
 uint32_t debounceTime = 24576;
-uint32_t pitTime = 10485760;   // 10485760 hz = 1 s
-
+uint32_t pitTime = 0x30D3F;   // 10485760 hz = 1 s
 
 enum STATE {
   STATE0, STATE1, STATE2
 };
 
-enum{
+enum {
   LOW, HIGH
 };
 
 extern "C" {
   void PIT_IRQHandler(void) {
     pit.clearInterruptFlag();
-    if(timer.getSleepTime()) {
+    if(fd.clockDiv()) {
       timer.decrement();
     }
   }
@@ -56,8 +57,7 @@ int main(void) {
   while (true) {
 
     display.updateDisplays();
-    uint8_t resultMultiplex = multiplex.select(0, timer.getSleepTime(),
-        temperatura);
+    uint8_t resultMultiplex = multiplex.select(0, timer.getSleepTime(), 0x12);
 
     switch (s) {
       case STATE0:
@@ -95,7 +95,7 @@ int main(void) {
         ledBlue.writeBit(LOW);
         display.writeWord(resultMultiplex, 2);
 
-        if(!timer.getSleepTime()){
+        if(!timer.getSleepTime()) {
           s = STATE0;
         }
         if(!timer.readIncrementButton() && delay.timeoutDelay()) {
@@ -117,7 +117,6 @@ int main(void) {
         }
         break;
     }
-
   }
 
   return 0;
