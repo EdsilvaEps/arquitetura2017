@@ -135,6 +135,53 @@ void dsf_SerialDisplays::writeWord(uint8_t number, uint8_t port){
   }
 }
 
+void dsf_SerialDisplays::writeWord(uint16_t bcd) {
+  /*!
+   *  Variáveis auxiliares
+   */
+  int A = 0, B = 0, C = 0, D = 0;
+
+  /*!
+   *  Retirar a casa dos milhares.
+   */
+  A = static_cast<int>(bcd/1000);
+
+  /*!
+   *  Retirar a casa das centenas.
+   */
+  B = static_cast<int>(bcd - A*1000)/100;
+
+  /*!
+   * Retirar a casa das dezenas
+   */
+  C = static_cast<int>(bcd - A*1000 - B*100)/10;
+
+  /*!
+   *  Retirar a casa das unidades.
+   */
+  D = static_cast<int>(bcd - A*1000 - B*100 - C*10);
+
+  /*!
+   *  Armazena na posição 3 o valor númerico de A.
+   */
+  storeData[3] = nibble[A];
+
+  /*!
+   *  Armazena na posição 2 o valor númerico de B.
+   */
+  storeData[2] = nibble[B];
+
+  /*!
+   *  Armazena na posição 1 o valor númerico de C.
+   */
+  storeData[1] = nibble[C];
+
+  /*!
+   *  Armazena na posição 0 o valor númerico de D.
+   */
+  storeData[0] = nibble[D];
+}
+
 void dsf_SerialDisplays::clearDisplays(){
   /*!
    *  Vari�vel auxiliar.

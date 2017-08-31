@@ -77,6 +77,7 @@ class dsf_SerialDisplays {
   void setupPeripheral();
   void writeNibble(uint8_t bin, uint8_t number);
   void writeWord(uint8_t number, uint8_t port);
+  void writeWord(uint16_t bcd);
   void clearDisplays();
   void showZerosLeft();
   void hideZerosLeft();

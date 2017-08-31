@@ -2,6 +2,7 @@
 #define SOURCES_LIB_ONOFF_ONOFF_H_
 
 #include <Lib/GPIO/mkl_GPIOPort.h>
+#include <Lib/Display/dsf_SerialDisplays.h>
 
 class Onoff{
 
