@@ -1,7 +1,8 @@
 /*!
  * @copyright   © 2017 UFAM - Universidade Federal do Amazonas.
  *
- * @brief       Programa exemplo de uso da classe dsf_PIT_ocp.
+ * @brief       Programa exemplo de uso da classe FrequencyDivider. Uma PIT de 10ms 
+ *              é dividida por 20, um led pisca conforme a frequencia dividida.
  *
  * @file        main.cpp
  * @version     1.0
@@ -55,7 +56,7 @@
  *  Definição dos objetos PIT e chamadas dos métodos constutores.
  */
 mkl_PITInterruptInterrupt pit(PIT_Ch0);
-FrequencyDivider divisor(2);
+FrequencyDivider divisor(20); //dividido 20 vezes
 
 /*!
  *  Definição do objeto led a ser usado.
@@ -69,8 +70,7 @@ Gpio led;
 void setup() {
   led.init();
   pit.enablePeripheralModule();
-  pit.setPeriod(0x1406F3F); //aprox 1 segundo
-  //pit.setPeriod(0x30D3F);
+  pit.setPeriod(0x30D3F); //aprox 10ms
 }
 
 
@@ -81,7 +81,7 @@ extern "C" {
   void PIT_IRQHandler(void) {
     pit.clearInterruptFlag();
     divisor.clockDiv();
-    if (divisor.getFlag()){
+    if (divisor.getFlag()){ //led pisca conforme estado de saida do divisor
     	led.invertCurrentState();
   	}
   }
