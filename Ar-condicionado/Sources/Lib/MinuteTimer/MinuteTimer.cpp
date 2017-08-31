@@ -15,13 +15,7 @@ MinuteTimer::MinuteTimer(gpio_Pin incrementButton, gpio_Pin resetButton) {
 
 void MinuteTimer::increment() {
 
-	uint8_t unit = (_sleepTime % 10);
-
-	if(unit != 0){
-		_sleepTime = _sleepTime - unit;
-	}
-
-	_sleepTime += 10;
+ _sleepTime = (_sleepTime/10)*10 + 10;
 
 	if (_sleepTime > 90)
 		_sleepTime = 0;

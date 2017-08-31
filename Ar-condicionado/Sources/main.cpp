@@ -18,7 +18,7 @@ mkl_PITInterruptInterrupt pit(PIT_Ch0);
 FrequencyDivider fd(100);
 
 uint32_t debounceTime = 24576;
-uint32_t pitTime = 0x30D3F;   // 10485760 hz = 1 s
+uint32_t pitTime = 10485760*0.01;   // 10485760 hz = 1 s
 
 enum STATE {
   STATE0, STATE1, STATE2
@@ -45,13 +45,9 @@ int main(void) {
   ledBlue.setPortMode(gpio_output);
   ledBlue.writeBit(HIGH);
 
-  display.clearDisplays();
-
   pit.enablePeripheralModule();
   pit.setPeriod(pitTime);
-  pit.resetCounter();
-  pit.enableTimer();
-  pit.enableInterruptRequests();
+
   STATE s = STATE0;
 
   while (true) {
@@ -64,6 +60,10 @@ int main(void) {
         onoffButton.ledStandby(LOW);
         ledBlue.writeBit(HIGH);
         display.clearDisplays();
+        timer.reset();
+        pit.disableTimer();
+        pit.resetCounter();
+        pit.disableInterruptRequests();
 
         if(!onoffButton.read() && delay.timeoutDelay()) {
           s = STATE1;
@@ -74,11 +74,16 @@ int main(void) {
         onoffButton.ledStandby(HIGH);
         ledBlue.writeBit(HIGH);
         display.writeWord(0x0, 2);
+        pit.disableTimer();
+        pit.resetCounter();
+        pit.disableInterruptRequests();
 
         if(!timer.readIncrementButton() && delay.timeoutDelay()) {
           delay.startDelay(debounceTime);
           timer.increment();
           s = STATE2;
+          pit.enableTimer();
+          pit.enableInterruptRequests();
         }
 
         if(!timer.readResetButton() && delay.timeoutDelay()) {
